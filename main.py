@@ -6,6 +6,8 @@ from spotify_service import generate_auth_url, get_api_token, get_valid_access_t
 app = FastAPI()
 
 USER_PROFILE_ENDPOINT = "https://api.spotify.com/v1/me"
+SEARCH_ENDPOINT = "https://api.spotify.com/v1/search"
+TOP_TRACKS_ENDPOINT = f"{USER_PROFILE_ENDPOINT}/top/tracks"
 
 @app.get("/login")
 def login():
@@ -26,12 +28,36 @@ async def api_callback(request: Request):
 
     return JSONResponse(content={"message": "El token ha sido almacenado corectamente."})
 
-@app.get("/call_spotify_api")
-def call_spotify_api():
+@app.get("/search")
+def search(search_term: str, type: str = "track", limit: int = 10):
+    if not search_term.strip():
+        raise HTTPException(status_code=400, detail="Has de agregar al menos un término de búsqueda.")
+    
     access_token = get_valid_access_token()
     headers = {"Authorization": f"Bearer {access_token}"}
+    request_params = {
+        "q": search_term,
+        "type": type,
+        "limit": limit
+    }
     
-    response = requests.get(USER_PROFILE_ENDPOINT, headers=headers)
+    response = requests.get(SEARCH_ENDPOINT, headers=headers, params=request_params)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return response.json()
+
+@app.get("/top-tracks")
+def get_top_tracks(time_range: str = "medium_term", limit: int = 10):
+    access_token = get_valid_access_token()
+    headers = {"Authorization": f"Bearer {access_token}"}
+    request_params = {
+        "time_range": time_range,
+        "limit": limit
+    }
+
+    response = requests.get(TOP_TRACKS_ENDPOINT, headers=headers, params=request_params)
 
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.text)
