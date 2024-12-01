@@ -1,8 +1,11 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, RedirectResponse
-from spotify_service import generate_auth_url, handle_callback
+import requests
+from spotify_service import generate_auth_url, get_api_token, get_valid_access_token
 
 app = FastAPI()
+
+USER_PROFILE_ENDPOINT = "https://api.spotify.com/v1/me"
 
 @app.get("/login")
 def login():
@@ -19,6 +22,18 @@ async def api_callback(request: Request):
     if not code:
         raise HTTPException(status_code=400, detail="No se ha retornado código de autorización")
     
-    token_data = handle_callback(code)
+    get_api_token(code)
 
-    return JSONResponse(content=token_data)
+    return JSONResponse(content={"message": "El token ha sido almacenado corectamente."})
+
+@app.get("/call_spotify_api")
+def call_spotify_api():
+    access_token = get_valid_access_token()
+    headers = {"Authorization": f"Bearer {access_token}"}
+    
+    response = requests.get(USER_PROFILE_ENDPOINT, headers=headers)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return response.json()
