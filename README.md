@@ -1,114 +1,90 @@
 # Spotify Integration API
 
-API RESTful para consultar canciones/artistas mediante la integración con Spotify, desarrollada con FastAPI.
+API RESTful para consultar canciones/artistas y las canciones favoritas del usuario mediante la integración con Spotify. Desarrollada con FastAPI.
 
 ## Instalación
 
 ### Requisitos
 - Python 3.8 o superior.
-- Cuenta de desarrollador de Spotify para obtener `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET` y `SPOTIFY_REDIRECT`.
+- Cuenta de desarrollador de Spotify para obtener el client ID y client secret de la API.
 
 ### Configuración
-1. Clona el repositorio en tu máquina local:
+1. Clona el repositorio    
+2. Crea un fichero .env en el que agreges
+   
+   ```
+   SPOTIFY_CLIENT_ID="tu client ID"
+   SPOTIFY_CLIENT_SECRET="tu client secret"
+   ```
+3. Instala las dependencias. Es posible que al instalar alguna de ellas se instalen también librerías asociadas. Puedes realizar la instalación con este comando:
+
    ```bash
-   git clone <URL del repositorio>
-   cd <directorio del proyecto>
-
-1.  ```bashCopy codepython -m venv envsource env/bin/activate # En Windows usa env\\Scripts\\activate
-    
-2.  ```bashCopy codepip install -r requirements.txt
-    
-3.  makefileCopy codeSPOTIFY\_CLIENT\_ID=SPOTIFY\_CLIENT\_SECRET=SPOTIFY\_REDIRECT=**Nota**: El SPOTIFY\_REDIRECT debe coincidir con el configurado en el portal de desarrolladores de Spotify.
-    
-
+   pip install -r requirements.txt
+   
 ### Uso
 
-1.  ```bashpython launch.py
-
-Esto lanzará el servidor en http://127.0.0.1:8000.
+Lanza el servidor en `http://127.0.0.1:8000` mediante el siguiente comando:
+1.  ```bash
+    python launch.py
     
-2.  Accede a la documentación interactiva generada automáticamente por FastAPI en Swagger UI: http://127.0.0.1:8000/docs
-        
+2. Explora la aplicación. Puedes acceder a documentación interatviva autogenerada por FastAPI en Swagger UI en `http://127.0.0.1:8000/docs`
 
+
+Principios SOLID aplicados al proyecto 
+-------------------------------------
+
+### Separación de Responsabilidades (SSP)
+
+main.py define los endpoints de la API y la lógica de enrutamiento, delegando a spotify\_service.py el manejo de toda la lógica relativa a la API de Spotify, por ejemplo, el almacenamiento y refresco del token de acceso cuando expira.
+
+    
 Endpoints Principales
 ---------------------
 
-### 1\. Buscar canciones o artistas en Spotify
-
-*   **Ruta**: /search
-    
-*   **Método**: GET
-    
-*   **Descripción**: Busca canciones o artistas según un término de búsqueda.
-    
-*   **Parámetros**:
-    
-    *   q: Término de búsqueda (obligatorio).
-        
-    *   type: Tipo de búsqueda (track, artist, etc.).
-        
-    *   limit: Número máximo de resultados (por defecto, 10).
-        
-
-### 2\. Obtener las canciones más reproducidas del usuario
-
-*   **Ruta**: /top-tracks
-    
-*   **Método**: GET
-    
-*   **Descripción**: Recupera las canciones más escuchadas del usuario.
-    
-*   **Parámetros**:
-    
-    *   time\_range: Rango de tiempo (short\_term, medium\_term, long\_term).
-        
-    *   limit: Número máximo de resultados (por defecto, 10).
-        
-
-### 3\. Login y manejo de autenticación con Spotify
+### 1\. Login y callback
 
 *   **Ruta**: /login y /callback
     
 *   **Método**: GET
     
-*   **Descripción**:
+*   **Descripción**: Manejan la autenticación del usuario, apoyándose en funcionalidad recogida en el `spotify_service.py` (SSP)
     
     *   /login: Redirige al usuario a Spotify para autenticar.
         
-    *   /callback: Procesa el código de autorización y almacena los tokens de acceso.
+    *   /callback: Procesa el código de autorización y almacena los tokens de acceso a la API.
+
+### 2\. Buscar canciones o artistas en Spotify
+
+*   **Ruta**: /search
+    
+*   **Método**: GET
+    
+*   **Descripción**: En base a un término de búsqueda `q` busca canciones o artistas. El parámetro de búsqueda `type` permite buscar por "track", "artist", etc. por defecto se busca canciones. `limit` refiere al número máximo de resultados (por defecto 5)
+    
+
+### 3\. Obtener las canciones más reproducidas del usuario
+
+*   **Ruta**: /top-tracks
+    
+*   **Método**: GET
+    
+*   **Descripción**: Recupera las canciones más escuchadas del usuario. Por defecto este endpoint devuelve el top 10 de canciones escuchadas en los últimos 6 meses, pero puede modificarse cambiando `time_range` a short\_term o long\_term, y el número de resultados seteando `limit`.
         
-
-Separación de Responsabilidades (SSP)
--------------------------------------
-
-### spotify\_service.py
-
-Este archivo maneja toda la lógica relacionada con la API de Spotify:
-
-*   Generación de la URL de autorización.
-    
-*   Obtención y almacenamiento de tokens de acceso.
-    
-*   Refresco del token cuando expira.
-    
-
-### main.py
-
-Este archivo define los endpoints de la API y gestiona la lógica de enrutamiento. Utiliza las funciones de spotify\_service.py para interactuar con Spotify, delegando la responsabilidad de autenticación y manejo de tokens.
 
 Pruebas
 -------
 
-### Probar los Endpoints
+### Probar con RapidAPI
 
 1.  ```bashpython launch.py
     
 2.  **Probar usando RapidAPI**:
     
-    *   ```bashGET "http://127.0.0.1:8000/search?q=Coldplay&type=artist&limit=5"
+    * **Login**: antes que nada navega a http://127.0.0.1:8000/login para autenticar con Spotify.
+    *   ```
+        GET "http://127.0.0.1:8000/search?q=Coldplay&type=artist&limit=5"
         
-    *   ```bashGET "http://127.0.0.1:8000/top-tracks?time\_range=medium\_term&limit=5"
-        
-    *   **Login**:Navega a http://127.0.0.1:8000/login para autenticar con Spotify.
+    *   ```
+        GET "http://127.0.0.1:8000/top-tracks?time\_range=medium\_term&limit=5"
         
 3.  **Probar desde Swagger UI**:Abre http://127.0.0.1:8000/docs y utiliza los endpoints interactivos para enviar parámetros y ver respuestas.
