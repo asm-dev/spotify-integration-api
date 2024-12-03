@@ -12,7 +12,7 @@ load_dotenv()
 
 AUTH_URL = "https://accounts.spotify.com/authorize"
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
-REDIRECT_URL = "SPOTIFY_REDIRECT=http://localhost:8000/callback"
+REDIRECT_URL = "http://localhost:8000/callback"
 
 CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
