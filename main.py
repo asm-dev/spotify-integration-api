@@ -29,7 +29,7 @@ async def api_callback(request: Request):
     return JSONResponse(content={"message": "El token ha sido almacenado corectamente."})
 
 @app.get("/search")
-def search(search_term: str, type: str = "track", limit: int = 10):
+def search(search_term: str, type: str = "track", limit: int = 5):
     if not search_term.strip():
         raise HTTPException(status_code=400, detail="Has de agregar al menos un término de búsqueda.")
     
