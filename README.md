@@ -9,14 +9,14 @@ API RESTful para consultar canciones/artistas y las canciones favoritas del usua
 - Cuenta de desarrollador de Spotify para obtener el client ID y client secret de la API.
 
 ### Configuración
-1. Clona el repositorio    
-2. Crea un fichero .env en el que agreges
+1. Clona el repositorio.
+2. Crea un fichero .env y agrega tus datos de acceso a la API de Spotify.
    
    ```
    SPOTIFY_CLIENT_ID="tu client ID"
    SPOTIFY_CLIENT_SECRET="tu client secret"
    ```
-3. Instala las dependencias. Es posible que al instalar alguna de ellas se instalen también librerías asociadas. Puedes realizar la instalación con este comando:
+3. Instala las dependencias. Es posible que al instalar alguna de ellas se instalen también librerías asociadas.
 
    ```bash
    pip install -r requirements.txt
@@ -24,24 +24,21 @@ API RESTful para consultar canciones/artistas y las canciones favoritas del usua
 ### Uso
 
 Lanza el servidor en `http://127.0.0.1:8000` mediante el siguiente comando:
-1.  ```bash
-    python launch.py
+   ```
+   python launch.py
+   ``` 
+Explora la aplicación.
+   - Puedes acceder a documentación interactiva autogenerada por FastAPI en Swagger UI en `http://127.0.0.1:8000/docs`
+   - Alternativamente, puedes usar extensiones como RapidAPI.
+   - Si quieres hacer una prueba rápida de comportamiento puedes probar a ir a cualquiera de estas rutas
+   ```
+   http://127.0.0.1:8000/search?q=Coldplay&type=artist&limit=5
+   http://127.0.0.1:8000/top-tracks?time\_range=medium\_term&limit=5
+   ```
     
-2. Explora la aplicación. Puedes acceder a documentación interatviva autogenerada por FastAPI en Swagger UI en `http://127.0.0.1:8000/docs`
+## Endpoints Principales
 
-
-Principios SOLID aplicados al proyecto 
--------------------------------------
-
-### Separación de Responsabilidades (SSP)
-
-main.py define los endpoints de la API y la lógica de enrutamiento, delegando a spotify\_service.py el manejo de toda la lógica relativa a la API de Spotify, por ejemplo, el almacenamiento y refresco del token de acceso cuando expira.
-
-    
-Endpoints Principales
----------------------
-
-### 1\. Login y callback
+**Login y callback**
 
 *   **Ruta**: /login y /callback
     
@@ -53,7 +50,7 @@ Endpoints Principales
         
     *   /callback: Procesa el código de autorización y almacena los tokens de acceso a la API.
 
-### 2\. Buscar canciones o artistas en Spotify
+**Buscar canciones o artistas en Spotify**
 
 *   **Ruta**: /search
     
@@ -62,29 +59,27 @@ Endpoints Principales
 *   **Descripción**: En base a un término de búsqueda `q` busca canciones o artistas. El parámetro de búsqueda `type` permite buscar por "track", "artist", etc. por defecto se busca canciones. `limit` refiere al número máximo de resultados (por defecto 5)
     
 
-### 3\. Obtener las canciones más reproducidas del usuario
+**Obtener las canciones más reproducidas del usuario**
 
 *   **Ruta**: /top-tracks
     
 *   **Método**: GET
     
 *   **Descripción**: Recupera las canciones más escuchadas del usuario. Por defecto este endpoint devuelve el top 10 de canciones escuchadas en los últimos 6 meses, pero puede modificarse cambiando `time_range` a short\_term o long\_term, y el número de resultados seteando `limit`.
-        
+  
+&nbsp;
 
-Pruebas
--------
+## Aplicación de principios SOLID 
 
-### Probar con RapidAPI
+- **Responsabilidad Única**, _SSP_:  
+   - `main.py` se enfoca en manejar la API REST y las interacciones del usuario.
+   - `spotify_service.py` gestiona la comunicación con la API de Spotify, por ejemplo, la gestión del token de acceso.
 
-1.  ```bashpython launch.py
-    
-2.  **Probar usando RapidAPI**:
-    
-    * **Login**: antes que nada navega a http://127.0.0.1:8000/login para autenticar con Spotify.
-    *   ```
-        GET "http://127.0.0.1:8000/search?q=Coldplay&type=artist&limit=5"
-        
-    *   ```
-        GET "http://127.0.0.1:8000/top-tracks?time\_range=medium\_term&limit=5"
-        
-3.  **Probar desde Swagger UI**:Abre http://127.0.0.1:8000/docs y utiliza los endpoints interactivos para enviar parámetros y ver respuestas.
+- **Abierto/Cerrado**, _Open/Closed_: es fácil agregar nuevos endpoints o servicios sin necesidad de cambiar la funcionalidad existente, lo que facilita la expansión.
+
+- **Sustitución de Liskov**, _Liskov Substitution_: aunque no se usa clases, se siguen principios de diseño modular ya que los módulos o componentes podrían ser sustituidos por otros sin afectar la duncionalidad de los demás.
+
+- **Segregación de Interfaces**, _Interface Segregation_: cada función tiene una responsabilidad clara y especializada, por ejemplo `generate_auth_url`.
+
+- **Inversión de Dependencias**, _Dependency Inversion_: la lógica de `main.py`está desacoplada de los detalles de la implementación de la lógica de la API de Spotify en el servicio `spotify_service.py`.
+
