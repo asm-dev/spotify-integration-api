@@ -23,11 +23,13 @@ API RESTful para consultar canciones/artistas y las canciones favoritas del usua
    
 ### Uso
 
-Lanza el servidor en `http://127.0.0.1:8000` mediante el siguiente comando:
+1. Lanza el servidor en `http://127.0.0.1:8000` mediante el siguiente comando:
    ```
    python launch.py
-   ``` 
-Explora la aplicación.
+   ```
+2. Accede a `/login` para conseguir tu token de acceso.
+
+3. Explora la aplicación.
    - Puedes acceder a documentación interactiva autogenerada por FastAPI en Swagger UI en `http://127.0.0.1:8000/docs`
    - Alternativamente, puedes usar extensiones como RapidAPI.
    - Si quieres hacer una prueba rápida de comportamiento puedes probar a ir a cualquiera de estas rutas
