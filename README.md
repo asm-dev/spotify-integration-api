@@ -27,15 +27,15 @@ API RESTful para consultar canciones/artistas y las canciones favoritas del usua
    ```
    python launch.py
    ```
-2. Accede a `/login` para conseguir tu token de acceso.
+2. Accede a `/login` para conseguir tu token de acceso. Este paso es muy importante, ya que sin el token no podrás acceder a los endpoints.
 
 3. Explora la aplicación.
    - Puedes acceder a documentación interactiva autogenerada por FastAPI en Swagger UI en `http://127.0.0.1:8000/docs`
    - Alternativamente, puedes usar extensiones como RapidAPI.
-   - Si quieres hacer una prueba rápida de comportamiento puedes probar a ir a cualquiera de estas rutas
+   - Si quieres hacer una prueba rápida de comportamiento puedes probar a ir a cualquiera de estas URL
    ```
    http://127.0.0.1:8000/search?q=Coldplay&type=artist&limit=5
-   http://127.0.0.1:8000/top-tracks?time\_range=medium\_term&limit=5
+   http://localhost:8000/top-tracks?time_range=short_term&limit=3
    ```
 &nbsp;
 ## Endpoints Principales
