@@ -1,7 +1,7 @@
 # Spotify Integration API
 
 API RESTful para consultar canciones/artistas y las canciones favoritas del usuario mediante la integración con Spotify. Desarrollada con FastAPI.
-
+&nbsp;
 ## Instalación
 
 ### Requisitos
@@ -35,7 +35,7 @@ Explora la aplicación.
    http://127.0.0.1:8000/search?q=Coldplay&type=artist&limit=5
    http://127.0.0.1:8000/top-tracks?time\_range=medium\_term&limit=5
    ```
-    
+&nbsp;
 ## Endpoints Principales
 
 **Login y callback**
