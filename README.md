@@ -1,6 +1,6 @@
 # Spotify Integration API
 
-API RESTful para consultar canciones/artistas y las canciones favoritas del usuario mediante la integración con Spotify. Desarrollada con FastAPI.
+API RESTful para consultar canciones/artistas y realizar operaciones CRUD con las canciones favoritas del usuario mediante la integración con Spotify. Desarrollada con FastAPI.
 &nbsp;
 ## Instalación
 
@@ -27,48 +27,58 @@ API RESTful para consultar canciones/artistas y las canciones favoritas del usua
    ```
    python launch.py
    ```
-2. Accede a `/login` para conseguir tu token de acceso. Este paso es muy importante, ya que sin el token no podrás acceder a los endpoints.
+2. Una vez resuelto el login deberías ser redirigido automáticamente `/login`, pero si no fuera así debido a la configuración de tu IDE o equipo, por favor accede manualmente. Este paso es muy importante, ya que sin el token no podrás acceder a los endpoints.
 
 3. Explora la aplicación.
-   - Puedes acceder a documentación interactiva autogenerada por FastAPI en Swagger UI en `http://127.0.0.1:8000/docs`
-   - Alternativamente, puedes usar extensiones como RapidAPI.
-   - Si quieres hacer una prueba rápida de comportamiento puedes probar a ir a cualquiera de estas URL
-   ```
-   http://127.0.0.1:8000/search?q=Coldplay&type=artist&limit=5
-   http://localhost:8000/top-tracks?time_range=short_term&limit=3
-   ```
+
+   - Puedes acceder a documentación interactiva autogenerada por FastAPI en Swagger UI en `http://127.0.0.1:8000/docs`. Alternativamente, puedes usar extensiones como RapidAPI.
+   
+   - Si quieres hacer una prueba rápida de comportamiento puedes probar a ir a `http://127.0.0.1:8000/search?q=Coldplay&type=artist&limit=5` o `http://localhost:8000/top-tracks?time_range=short_term&limit=3`
+   
+   - `/save-top-tracks` permite almacenar tus canciones favoritas en un JSON. Puedes crear, leer, eliminar o updatar estas canciones utilizando varios endpoints presentes en la aplicación.
+   
 &nbsp;
+
 ## Endpoints Principales
 
-**Login y callback**
-
-*   **Ruta**: /login y /callback
+**Login y callback**, GET:
     
-*   **Método**: GET
+*   Manejan la autenticación del usuario, apoyándose en funcionalidad recogida en el `spotify_service.py` (SSP)
     
-*   **Descripción**: Manejan la autenticación del usuario, apoyándose en funcionalidad recogida en el `spotify_service.py` (SSP)
-    
-    *   /login: Redirige al usuario a Spotify para autenticar.
+    *   `/login`: Redirige al usuario a Spotify para autenticar.
         
-    *   /callback: Procesa el código de autorización y almacena los tokens de acceso a la API.
+    *   `/callback`: Procesa el código de autorización y almacena los tokens de acceso a la API.
 
-**Buscar canciones o artistas en Spotify**
+**Buscar canciones o artistas en Spotify**, GET:
 
-*   **Ruta**: /search
-    
-*   **Método**: GET
-    
-*   **Descripción**: En base a un término de búsqueda `q` busca canciones o artistas. El parámetro de búsqueda `type` permite buscar por "track", "artist", etc. por defecto se busca canciones. `limit` refiere al número máximo de resultados (por defecto 5)
+*   `/search`: en base a un término de búsqueda `q` busca canciones o artistas. El parámetro de búsqueda `type` permite buscar por "track", "artist", etc. por defecto se busca canciones. `limit` refiere al número máximo de resultados (por defecto 5)
     
 
-**Obtener las canciones más reproducidas del usuario**
+**Obtener las canciones más reproducidas del usuario**, GET:
+    
+*   `/top-tracks`: recupera las canciones más escuchadas del usuario. Por defecto este endpoint devuelve el top 10 de canciones escuchadas en los últimos 6 meses, pero puede modificarse cambiando `time_range` a short\_term o long\_term, y el número de resultados seteando `limit`.
 
-*   **Ruta**: /top-tracks
-    
-*   **Método**: GET
-    
-*   **Descripción**: Recupera las canciones más escuchadas del usuario. Por defecto este endpoint devuelve el top 10 de canciones escuchadas en los últimos 6 meses, pero puede modificarse cambiando `time_range` a short\_term o long\_term, y el número de resultados seteando `limit`.
-  
+
+**Guardar las canciones más reproducidas del usuario**, GET:
+
+*   `/save-top-tracks`: obtiene las canciones más escuchadas del usuario desde el servicio de Spotify utilizando el endpoint `/top-tracks`. Las canciones recibidas se guardan en un archivo `user_songs.json`. Cada canción es añadida al archivo utilizando el endpoint `POST /songs`, lo que permite mantener una lista actualizada de las canciones favoritas del usuario.
+
+**Operaciones CRUD en una lista de canciones**
+
+*   **Create**, POST: `/songs`
+
+*   **Read**, GET:  `/songs` y `/songs/{song_id}`
+
+*   **Update**, PUT: `/songs/{song_id}`
+
+*   **Delete**, DELETE: /songs y /songs/{song_id}
+
+&nbsp;
+
+## Ejemplo de uso
+
+![Screenshot 2024-12-06 192528](https://github.com/user-attachments/assets/5ef2576b-5d35-48f1-b6d0-aefbe5f13339)
+
 &nbsp;
 
 ## Aplicación de principios SOLID 
