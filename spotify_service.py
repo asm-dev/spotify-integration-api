@@ -13,7 +13,6 @@ load_dotenv()
 AUTH_URL = "https://accounts.spotify.com/authorize"
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 REDIRECT_URL = "http://localhost:8000/callback"
-
 CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
@@ -40,7 +39,7 @@ def generate_auth_url():
 
     return f"{AUTH_URL}?{urllib.parse.urlencode(query)}"
 
-def get_api_token(code: str):
+def get_token(code: str):
     client_token = {
         "grant_type": "authorization_code",
         "code": code,
