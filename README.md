@@ -1,7 +1,11 @@
 # Spotify Integration API
 
 API RESTful para consultar canciones/artistas y realizar operaciones CRUD con las canciones favoritas del usuario mediante la integración con Spotify. Desarrollada con FastAPI.
+
+![Screenshot 2024-12-06 192528](https://github.com/user-attachments/assets/5ef2576b-5d35-48f1-b6d0-aefbe5f13339)
+
 &nbsp;
+
 ## Instalación
 
 ### Requisitos
@@ -72,12 +76,6 @@ API RESTful para consultar canciones/artistas y realizar operaciones CRUD con la
 *   **Update**, PUT: `/songs/{song_id}`
 
 *   **Delete**, DELETE: /songs y /songs/{song_id}
-
-&nbsp;
-
-## Ejemplo de uso
-
-![Screenshot 2024-12-06 192528](https://github.com/user-attachments/assets/5ef2576b-5d35-48f1-b6d0-aefbe5f13339)
 
 &nbsp;
 
