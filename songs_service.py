@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-JSON_FILE = Path("songs.json")
+JSON_FILE = Path("user_songs.json")
 
 def retrieve_songs():
     if not JSON_FILE.exists():

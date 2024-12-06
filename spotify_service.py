@@ -7,7 +7,6 @@ import string
 import urllib
 import requests
 
-#Loads .env file
 load_dotenv()
 
 AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -39,7 +38,7 @@ def generate_auth_url():
 
     return f"{AUTH_URL}?{urllib.parse.urlencode(query)}"
 
-def get_token(code: str):
+def get_and_store_token(code: str):
     client_token = {
         "grant_type": "authorization_code",
         "code": code,

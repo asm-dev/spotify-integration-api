@@ -1,9 +1,9 @@
 import uuid
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 import requests
 from songs_service import retrieve_songs, save_songs
-from spotify_service import generate_auth_url, get_token, get_valid_access_token
+from spotify_service import generate_auth_url, get_and_store_token, get_valid_access_token
 
 app = FastAPI()
 
@@ -26,9 +26,16 @@ async def api_callback(request: Request):
     if not code:
         raise HTTPException(status_code=400, detail="No se ha retornado código de autorización")
     
-    get_token(code)
+    get_and_store_token(code)
 
-    return JSONResponse(content={"message": "El token ha sido almacenado corectamente."})
+    return HTMLResponse(content=f'''
+        <html>
+            <body>
+                <h1>El token ha sido almacenado correctamente.</h1>
+                <p>Puedes ir a la documentación para probar los endpoints <a href="/docs">aquí</a>.</p>
+            </body>
+        </html>
+    ''')
 
 @app.get("/search")
 def search(search_term: str, type: str = "track", limit: int = 5):
@@ -88,7 +95,7 @@ def read_songs_data():
     return retrieve_songs()
 
 @app.get("/songs/{song_id}")
-def read_song(song_id: int):
+def read_song(song_id: str):
     songs = retrieve_songs()
     for song in songs:
         if song["id"] == song_id:
@@ -99,7 +106,7 @@ def read_song(song_id: int):
     raise HTTPException(status_code=404, detail="Canción no encontrada")
 
 @app.put("/songs/{song_id}")
-def update_song(song_id: int, title: str, artist: str, album: str):
+def update_song(song_id: str, title: str, artist: str, album: str):
     songs = retrieve_songs()
     for song in songs:
         if song["id"] == song_id:
@@ -111,7 +118,7 @@ def update_song(song_id: int, title: str, artist: str, album: str):
     raise HTTPException(status_code=404, detail="Canción no encontrada")
 
 @app.delete("/songs/{song_id}")
-def delete_song(song_id: int):
+def delete_song(song_id: str):
     songs = retrieve_songs()
     for song in songs:
         if song["id"] == song_id:
