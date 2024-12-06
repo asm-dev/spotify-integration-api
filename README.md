@@ -79,15 +79,15 @@ API RESTful para consultar canciones/artistas y realizar operaciones CRUD con la
 
 ## Aplicación de principios SOLID 
 
-- **Responsabilidad Única**, _SSP_:  
+- **Responsabilidad Única**, SRP:  
    - `main.py` se enfoca en manejar la API REST y las interacciones del usuario.
    - `spotify_service.py` gestiona la comunicación con la API de Spotify, por ejemplo, la gestión del token de acceso.
 
-- **Abierto/Cerrado**, _Open/Closed_: es fácil agregar nuevos endpoints o servicios sin necesidad de cambiar la funcionalidad existente, lo que facilita la expansión.
+- **Abierto/Cerrado**, Open/Closed: es fácil agregar nuevos endpoints o servicios sin necesidad de cambiar la funcionalidad existente, lo que facilita la expansión.
 
-- **Sustitución de Liskov**, _Liskov Substitution_: aunque no se usa clases, se siguen principios de diseño modular ya que los módulos o componentes podrían ser sustituidos por otros sin afectar la duncionalidad de los demás.
+- **Sustitución de Liskov**, Liskov Substitution: aunque no se usa clases, se siguen principios de diseño modular ya que los módulos o componentes podrían ser sustituidos por otros sin afectar la duncionalidad de los demás.
 
-- **Segregación de Interfaces**, _Interface Segregation_: cada función tiene una responsabilidad clara y especializada, por ejemplo `generate_auth_url`.
+- **Segregación de Interfaces**, Interface Segregation: cada función tiene una responsabilidad clara y especializada, por ejemplo `generate_auth_url`.
 
-- **Inversión de Dependencias**, _Dependency Inversion_: la lógica de `main.py`está desacoplada de los detalles de la implementación de la lógica de la API de Spotify en el servicio `spotify_service.py`.
+- **Inversión de Dependencias**, Dependency Inversion: la lógica de `main.py`está desacoplada de los detalles de la implementación de la lógica de la API de Spotify en el servicio `spotify_service.py`.
 
