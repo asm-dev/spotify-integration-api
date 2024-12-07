@@ -37,7 +37,7 @@ API RESTful para consultar canciones/artistas y realizar operaciones CRUD con la
    
    - Si quieres hacer una prueba rápida de comportamiento puedes probar a ir a `http://127.0.0.1:8000/search?q=Coldplay&type=artist&limit=5` o `http://localhost:8000/top-tracks?time_range=short_term&limit=3`
    
-   - `/save-top-tracks` permite almacenar tus canciones favoritas en un JSON. Puedes crear, leer, eliminar o updatar estas canciones utilizando varios endpoints presentes en la aplicación.
+   - `/save-top-tracks` permite almacenar tus canciones favoritas en un JSON. Una vez almacenadas, puedes crear, leer, eliminar o updatar estas canciones utilizando varios endpoints presentes en la aplicación.
    
 &nbsp;
 
