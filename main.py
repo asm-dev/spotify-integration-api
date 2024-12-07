@@ -2,8 +2,8 @@ import uuid
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 import requests
-from songs_service import retrieve_songs, save_songs
-from spotify_service import generate_auth_url, get_and_store_token, get_valid_access_token
+from services.songs_service import retrieve_songs, save_songs
+from services.spotify_service import get_auth_url, get_access_token, get_valid_token
 
 app = FastAPI()
 
@@ -13,8 +13,7 @@ TOP_TRACKS_ENDPOINT = f"{USER_PROFILE_ENDPOINT}/top/tracks"
 
 @app.get("/login")
 def login():
-    auth_url = generate_auth_url()
-    return RedirectResponse(url=auth_url)
+    return RedirectResponse(url=get_auth_url())
 
 @app.get("/callback")
 async def api_callback(request: Request):
@@ -26,7 +25,7 @@ async def api_callback(request: Request):
     if not code:
         raise HTTPException(status_code=400, detail="No se ha retornado código de autorización")
     
-    get_and_store_token(code)
+    get_access_token(code)
 
     return HTMLResponse(content=f'''
         <html>
@@ -42,7 +41,7 @@ def search(search_term: str, type: str = "track", limit: int = 5):
     if not search_term.strip():
         raise HTTPException(status_code=400, detail="Has de agregar al menos un término de búsqueda.")
     
-    access_token = get_valid_access_token()
+    access_token = get_valid_token()
     headers = {"Authorization": f"Bearer {access_token}"}
     request_params = {
         "q": search_term,
@@ -59,7 +58,7 @@ def search(search_term: str, type: str = "track", limit: int = 5):
 
 @app.get("/top-tracks")
 def get_top_tracks(time_range: str = "medium_term", limit: int = 10):
-    access_token = get_valid_access_token()
+    access_token = get_valid_token()
     headers = {"Authorization": f"Bearer {access_token}"}
     request_params = {
         "time_range": time_range,

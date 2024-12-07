@@ -1,7 +1,8 @@
-import time
 from dotenv import load_dotenv
 from fastapi import HTTPException
+from services.token_store_service import load_stored_token, save_token
 import os
+import time
 import random
 import string
 import urllib
@@ -15,30 +16,21 @@ REDIRECT_URL = "http://localhost:8000/callback"
 CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
-stored_token = {
-    "access_token": None,
-    "refresh_token": None,
-    "expiration_time": None,
-}
-
-def create_random_state(length=16):
+def get_random_state(length=16):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
-def generate_auth_url():
-    state = create_random_state()
-    scope = "user-top-read user-read-private user-read-email"
-    
+def get_auth_url():   
     query = {
         "response_type": "code",
         "client_id": CLIENT_ID,
         "redirect_uri": REDIRECT_URL,
-        "scope": scope,
-        "state": state
+        "scope": "user-top-read user-read-private user-read-email",
+        "state": get_random_state()
     }
 
     return f"{AUTH_URL}?{urllib.parse.urlencode(query)}"
 
-def get_and_store_token(code: str):
+def get_access_token(code: str):
     client_token = {
         "grant_type": "authorization_code",
         "code": code,
@@ -61,15 +53,17 @@ def get_and_store_token(code: str):
     if not access_token:
         raise ValueError("No se recibió el access_token del servidor de Spotify.")
     
-    stored_token["access_token"] = access_token
-    stored_token["refresh_token"] = refresh_token
-    stored_token["expiration_time"] = expiration_time
+    token_data = {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "expiration_time": expiration_time,
+    }
+    
+    save_token(token_data)
 
-    if not stored_token["refresh_token"]:
-        raise ValueError("No se ha recibido el token de refresco.")
-
-def refresh_token():
-    refresh_token = stored_token["refresh_token"]
+def update_token():
+    updated_token = load_stored_token()
+    refresh_token = updated_token["refresh_token"]
 
     if not refresh_token:
         raise ValueError("No se puede refrescar el token de acceso sin token de refresco.")
@@ -88,10 +82,13 @@ def refresh_token():
     
     new_token = response.json()
 
-    stored_token["access_token"] = new_token["access_token"]
-    stored_token["expiration_time"] = time.time() + new_token["expires_in"]
+    updated_token["access_token"] = new_token["access_token"]
+    updated_token["expiration_time"] = time.time() + new_token["expires_in"]
 
-def get_valid_access_token():
+    save_token(updated_token)
+
+def get_valid_token():
+    stored_token = load_stored_token()
     accessToken = stored_token["access_token"]
     tokenExpiration = stored_token["expiration_time"]
 
@@ -105,4 +102,4 @@ def get_valid_access_token():
     if accessToken and not isExpired:
         return accessToken
 
-    return refresh_token()
+    return update_token()
