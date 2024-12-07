@@ -65,7 +65,8 @@ API RESTful para consultar canciones/artistas y realizar operaciones CRUD con la
 
 *   `/save-top-tracks`: obtiene las canciones más escuchadas del usuario desde el servicio de Spotify utilizando el endpoint `/top-tracks`. Las canciones recibidas se guardan en un archivo `user_songs.json`. Cada canción es añadida al archivo utilizando el endpoint `POST /songs`, lo que permite mantener una lista actualizada de las canciones favoritas del usuario.
 
-**Operaciones CRUD en una lista de canciones**
+
+**Operaciones CRUD en una lista de canciones**:
 
 *   **Create**, POST: `/songs`
 
