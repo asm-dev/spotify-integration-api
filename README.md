@@ -74,7 +74,7 @@ API RESTful para consultar canciones/artistas y realizar operaciones CRUD con la
 
 *   **Update**, PUT: `/songs/{song_id}`
 
-*   **Delete**, DELETE: /songs y /songs/{song_id}
+*   **Delete**, DELETE: `/songs` y `/songs/{song_id}`
 
 &nbsp;
 
@@ -86,7 +86,7 @@ API RESTful para consultar canciones/artistas y realizar operaciones CRUD con la
 
 - **Abierto/Cerrado**, Open/Closed: es fácil agregar nuevos endpoints o servicios sin necesidad de cambiar la funcionalidad existente, lo que facilita la expansión.
 
-- **Sustitución de Liskov**, Liskov Substitution: aunque no se usa clases, se siguen principios de diseño modular ya que los módulos o componentes podrían ser sustituidos por otros sin afectar la duncionalidad de los demás.
+- **Sustitución de Liskov**, Liskov Substitution: aunque no se emplea clases, se siguen principios de diseño modular ya que los módulos o componentes podrían ser sustituidos por otros sin afectar la funcionalidad de los demás.
 
 - **Segregación de Interfaces**, Interface Segregation: cada función tiene una responsabilidad clara y especializada, por ejemplo `generate_auth_url`.
 
