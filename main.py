@@ -4,6 +4,8 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 import requests
 from services.songs_service import retrieve_songs, save_songs
 from services.spotify_service import get_auth_url, get_access_token, get_valid_token
+from services.users_service import retrieve_users, save_users, get_user_by_id, create_user, update_user, delete_user
+
 
 app = FastAPI()
 
@@ -147,3 +149,52 @@ def save_top_tracks(time_range: str = "medium_term", limit: int = 10):
         )
 
     return {"message": f"Se han guardado tus {len(top_tracks['items'])} canciones favoritas."}
+
+@app.get("/users/")
+def get_all_users():
+    return retrieve_users()
+
+@app.get("/users/{user_id}")
+def get_user(user_id: str):
+    user = get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+    return user
+
+@app.post("/users/")
+def create_new_user(name: str, email: str):
+    if not name.strip() or not email.strip():
+        raise HTTPException(status_code=400, detail="Nombre y correo electrónico son obligatorios.")
+
+    new_user = create_user(name, email)
+    return {
+        "message": f"El usuario '{new_user['name']}' ha sido creado.",
+        "user": new_user
+    }
+
+@app.put("/users/{user_id}")
+def update_existing_user(user_id: str, name: str = None, email: str = None):
+    if not name and not email:
+        raise HTTPException(status_code=400, detail="Por favor proporciona al menos un campo para actualizar (nombre o email).")
+
+    try:
+        updated_user = update_user(user_id, name=name, email=email)
+        return {
+            "message": f"El usuario '{updated_user['name']}' ha sido actualizado correctamente.",
+            "user": updated_user
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    
+@app.delete("/users/{user_id}")
+def delete_existing_user(user_id: str):
+    try:
+        delete_user(user_id)
+        return {"message": f"El usuario con ID '{user_id}' ha sido eliminado con éxito."}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.delete("/users/")
+def delete_all_users():
+    save_users([])
+    return {"message": "Todos los usuarios han sido eliminados"}
