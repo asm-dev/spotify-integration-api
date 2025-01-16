@@ -15,15 +15,15 @@ API RESTful para consultar canciones/artistas y realizar operaciones CRUD con la
 2. Crea un fichero .env y agrega tus datos de acceso a la API de Spotify.
    
    ```
-   SPOTIFY_CLIENT_ID="tu client ID"
-   SPOTIFY_CLIENT_SECRET="tu client secret"
+   SPOTIFY_CLIENT_ID="tu_client_ID"
+   SPOTIFY_CLIENT_SECRET="tu_client_secret"
    ```
 3. Instala las dependencias. Es posible que al instalar alguna de ellas se instalen también librerías asociadas.
 
    ```bash
    pip install -r requirements.txt
    
-### Uso
+## Uso
 
 1. Lanza el servidor en `http://127.0.0.1:8000` mediante el siguiente comando:
    ```
@@ -78,6 +78,14 @@ API RESTful para consultar canciones/artistas y realizar operaciones CRUD con la
 
 &nbsp;
 
+## Listado completo de endpoints disponibles
+
+No solo se pueden realizar operaciones CRUD con las canciones, a modo de POC la aplicación también permite realizar operaciones CRUD con usuarios.
+
+![image](https://github.com/user-attachments/assets/2f6ad152-904a-4624-aead-4853398a1ded)
+
+&nbsp;
+
 ## Aplicación de principios SOLID 
 
 - **Responsabilidad Única**, SRP:  
@@ -91,4 +99,8 @@ API RESTful para consultar canciones/artistas y realizar operaciones CRUD con la
 - **Segregación de Interfaces**, Interface Segregation: cada función tiene una responsabilidad clara y especializada, por ejemplo `generate_auth_url`.
 
 - **Inversión de Dependencias**, Dependency Inversion: la lógica de `main.py`está desacoplada de los detalles de la implementación de la lógica de la API de Spotify en el servicio `spotify_service.py`.
+
+&nbsp;
+
+
 
